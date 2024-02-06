@@ -1800,6 +1800,8 @@ var NoForkExternalNameConfigs = map[string]config.ExternalName{
 	//
 	// /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup1/providers/Microsoft.Network/dnsResolvers/dnsResolver1
 	"azurerm_private_dns_resolver": config.TemplatedStringAsIdentifier("name", "/subscriptions/{{ .setup.configuration.subscription_id }}/resourceGroups/{{ .parameters.resource_group_name }}/providers/Microsoft.Network/dnsResolvers/{{ .external_name }}"),
+	// /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/resourceGroup1/providers/Microsoft.Network/dnsResolvers/dnsResolver1/inboundEndpoints/inboundEndpoint1
+	"azurerm_private_dns_resolver_inbound_endpoint": config.TemplatedStringAsIdentifier("name", "/{{ .parameters.private_dns_resolver_id }}/inboundEndpoints/{{ .external_name }}"),
 
 	// orbital_contact
 	//

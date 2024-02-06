@@ -3209,6 +3209,69 @@ func (mg *PrivateDNSResolver) ResolveReferences(ctx context.Context, c client.Re
 	return nil
 }
 
+// ResolveReferences of this PrivateDNSResolverInboundEndpoint.
+func (mg *PrivateDNSResolverInboundEndpoint) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var rsp reference.ResolutionResponse
+	var err error
+
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.IPConfigurations); i3++ {
+		rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.IPConfigurations[i3].SubnetID),
+			Extract:      resource.ExtractResourceID(),
+			Reference:    mg.Spec.ForProvider.IPConfigurations[i3].SubnetIDRef,
+			Selector:     mg.Spec.ForProvider.IPConfigurations[i3].SubnetIDSelector,
+			To: reference.To{
+				List:    &SubnetList{},
+				Managed: &Subnet{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.IPConfigurations[i3].SubnetID")
+		}
+		mg.Spec.ForProvider.IPConfigurations[i3].SubnetID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.IPConfigurations[i3].SubnetIDRef = rsp.ResolvedReference
+
+	}
+	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PrivateDNSResolverID),
+		Extract:      resource.ExtractResourceID(),
+		Reference:    mg.Spec.ForProvider.PrivateDNSResolverIDRef,
+		Selector:     mg.Spec.ForProvider.PrivateDNSResolverIDSelector,
+		To: reference.To{
+			List:    &PrivateDNSResolverList{},
+			Managed: &PrivateDNSResolver{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.PrivateDNSResolverID")
+	}
+	mg.Spec.ForProvider.PrivateDNSResolverID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.PrivateDNSResolverIDRef = rsp.ResolvedReference
+
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.IPConfigurations); i3++ {
+		rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.IPConfigurations[i3].SubnetID),
+			Extract:      resource.ExtractResourceID(),
+			Reference:    mg.Spec.InitProvider.IPConfigurations[i3].SubnetIDRef,
+			Selector:     mg.Spec.InitProvider.IPConfigurations[i3].SubnetIDSelector,
+			To: reference.To{
+				List:    &SubnetList{},
+				Managed: &Subnet{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.IPConfigurations[i3].SubnetID")
+		}
+		mg.Spec.InitProvider.IPConfigurations[i3].SubnetID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.IPConfigurations[i3].SubnetIDRef = rsp.ResolvedReference
+
+	}
+
+	return nil
+}
+
 // ResolveReferences of this PrivateDNSSRVRecord.
 func (mg *PrivateDNSSRVRecord) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPIResolver(c, mg)

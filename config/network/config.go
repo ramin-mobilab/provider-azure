@@ -615,4 +615,8 @@ func Configure(p *config.Provider) {
 			return diff, nil
 		}
 	})
+
+	p.AddResourceConfigurator("azurerm_private_dns_resolver_inbound_endpoint", func(r *config.Resource) {
+		r.UseAsync = true
+	})
 }
